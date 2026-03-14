@@ -97,7 +97,6 @@
 <body>
 <div class="container">
 
-  <!-- Left panel -->
   <div class="left">
     <div class="brand">PO Manager</div>
     <div class="brand-sub">ERP System v1.0</div>
@@ -131,14 +130,12 @@
     </div>
   </div>
 
-  <!-- Right panel -->
   <div class="right">
     <div class="tab-row">
       <div class="tab active" onclick="switchTab('login')">Sign In</div>
       <div class="tab" onclick="switchTab('register')">Register</div>
     </div>
 
-    <!-- LOGIN FORM -->
     <div class="form-section active" id="form-login">
       <h2>Welcome back</h2>
       <p class="subtitle">Sign in to your account to continue</p>
@@ -159,7 +156,6 @@
       </button>
     </div>
 
-    <!-- REGISTER FORM -->
     <div class="form-section" id="form-register">
       <h2>Create account</h2>
       <p class="subtitle">Register to access the PO system</p>
@@ -249,7 +245,6 @@ function showOAuthMsg() {
   showError('login-error', 'Google OAuth requires cloud deployment. Use username/password for now.');
 }
 
-// Press Enter to login
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const active = document.querySelector('.form-section.active').id;

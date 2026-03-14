@@ -3,7 +3,6 @@ from models import db, Vendor
 
 vendors_bp = Blueprint('vendors', __name__)
 
-# GET all vendors
 @vendors_bp.route('/vendors', methods=['GET'])
 def get_vendors():
     try:
@@ -12,7 +11,6 @@ def get_vendors():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# GET single vendor
 @vendors_bp.route('/vendors/<int:id>', methods=['GET'])
 def get_vendor(id):
     try:
@@ -21,7 +19,6 @@ def get_vendor(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# POST create vendor
 @vendors_bp.route('/vendors', methods=['POST'])
 def create_vendor():
     try:
@@ -38,7 +35,6 @@ def create_vendor():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-# PUT update vendor
 @vendors_bp.route('/vendors/<int:id>', methods=['PUT'])
 def update_vendor(id):
     try:
@@ -53,7 +49,6 @@ def update_vendor(id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-# DELETE vendor
 @vendors_bp.route('/vendors/<int:id>', methods=['DELETE'])
 def delete_vendor(id):
     try:

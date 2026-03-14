@@ -11,12 +11,10 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions
     db.init_app(app)
     CORS(app)
     JWTManager(app)
 
-    # Register blueprints (route groups)
     app.register_blueprint(vendors_bp,  url_prefix='/api')
     app.register_blueprint(products_bp, url_prefix='/api')
     app.register_blueprint(orders_bp,   url_prefix='/api')

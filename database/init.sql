@@ -1,10 +1,7 @@
--- Create
 CREATE DATABASE po_management;
 
--- Connecting
 \c po_management;
 
--- Table 1 Vendors
 CREATE TABLE vendors (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -13,7 +10,6 @@ CREATE TABLE vendors (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table 2 Products
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -24,7 +20,6 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table 3 Purchase Orders
 CREATE TABLE purchase_orders (
     id SERIAL PRIMARY KEY,
     reference_no VARCHAR(50) UNIQUE NOT NULL,
@@ -34,7 +29,6 @@ CREATE TABLE purchase_orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table 4 PO Items (products inside a PO)
 CREATE TABLE po_items (
     id SERIAL PRIMARY KEY,
     po_id INTEGER REFERENCES purchase_orders(id) ON DELETE CASCADE,
@@ -44,13 +38,11 @@ CREATE TABLE po_items (
     subtotal NUMERIC(10,2) NOT NULL
 );
 
--- Sample vendors
 INSERT INTO vendors (name, contact, rating) VALUES
 ('Tech Supplies Co.', 'techsupplies@email.com', 4.5),
 ('Global Parts Ltd.', 'globalparts@email.com', 3.8),
 ('FastShip Inc.', 'fastship@email.com', 4.2);
 
--- Sample products
 INSERT INTO products (name, sku, unit_price, stock_level, category) VALUES
 ('Laptop Stand', 'SKU-001', 29.99, 100, 'Electronics'),
 ('Wireless Mouse', 'SKU-002', 15.49, 200, 'Electronics'),

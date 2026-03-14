@@ -19,7 +19,7 @@ def send_notification(reference_no, status, vendor_name):
             'vendor':       vendor_name
         }, timeout=2)
     except Exception:
-        pass  # don't crash if notification server is down
+        pass 
 
 @orders_bp.route('/orders', methods=['GET'])
 def get_orders():
@@ -65,7 +65,6 @@ def create_order():
 
         db.session.commit()
 
-        # Get vendor name for notification
         vendor = Vendor.query.get(data['vendor_id'])
         vendor_name = vendor.name if vendor else ''
         send_notification(order.reference_no, 'Draft', vendor_name)
@@ -83,7 +82,6 @@ def update_status(id):
         order.status = data['status']
         db.session.commit()
 
-        # Notify all connected browsers
         vendor = Vendor.query.get(order.vendor_id)
         vendor_name = vendor.name if vendor else ''
         send_notification(order.reference_no, data['status'], vendor_name)

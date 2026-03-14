@@ -24,16 +24,12 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--page-bg); color: var(--text-primary); display: flex; min-height: 100vh; }
-
-  /* ── Sidebar ── */
   .sidebar {
     width: var(--sidebar-width); background: var(--sidebar-bg);
     display: flex; flex-direction: column; padding: 0;
     position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
   }
-  .sidebar-logo {
-    padding: 24px 20px 20px; border-bottom: 0.5px solid rgba(255,255,255,0.07);
-  }
+  .sidebar-logo { padding: 24px 20px 20px; border-bottom: 0.5px solid rgba(255,255,255,0.07); }
   .sidebar-logo .brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
   .sidebar-logo .sub { color: var(--accent); font-size: 11px; font-weight: 400; margin-top: 2px; font-family: 'DM Mono', monospace; }
   .sidebar-nav { padding: 12px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
@@ -47,8 +43,6 @@
   .nav-link.active .nav-icon { color: var(--accent); }
   .nav-icon { font-size: 15px; width: 18px; text-align: center; }
   .sidebar-footer { padding: 16px 10px; border-top: 0.5px solid rgba(255,255,255,0.07); }
-
-  /* ── Main ── */
   .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
   .topbar {
     background: var(--surface); border-bottom: 1px solid var(--border);
@@ -68,16 +62,12 @@
     color: var(--accent); font-size: 11px; font-weight: 600;
   }
   .content { padding: 28px; flex: 1; }
-
-  /* ── Stat Cards ── */
   .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
   .stat-card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     padding: 18px 20px; position: relative; overflow: hidden;
   }
-  .stat-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .stat-card.blue::before  { background: #3b82f6; }
   .stat-card.green::before { background: #10b981; }
   .stat-card.amber::before { background: #f59e0b; }
@@ -85,8 +75,6 @@
   .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
   .stat-value { font-size: 26px; font-weight: 600; color: var(--text-primary); line-height: 1; }
   .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
-
-  /* ── Table Card ── */
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .table-header {
     padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
@@ -104,18 +92,11 @@
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: #f8fafc; }
   .ref-code { font-family: 'DM Mono', monospace; font-size: 12px; color: #3b82f6; }
-
-  /* ── Badges ── */
-  .badge-status {
-    display: inline-block; padding: 3px 10px; border-radius: 999px;
-    font-size: 11px; font-weight: 500;
-  }
+  .badge-status { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; }
   .badge-status.approved  { background: var(--badge-approved-bg);  color: var(--badge-approved-text); }
   .badge-status.pending   { background: var(--badge-pending-bg);   color: var(--badge-pending-text); }
   .badge-status.draft     { background: var(--badge-draft-bg);     color: var(--badge-draft-text); }
   .badge-status.rejected  { background: var(--badge-rejected-bg);  color: var(--badge-rejected-text); }
-
-  /* ── Buttons ── */
   .btn-primary {
     background: var(--sidebar-bg); color: #fff; border: none;
     padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
@@ -134,8 +115,6 @@
     transition: all 0.15s;
   }
   .btn-icon:hover { background: var(--page-bg); color: var(--text-primary); }
-
-  /* ── Modal ── */
   .modal-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
     z-index: 200; align-items: center; justify-content: center;
@@ -147,7 +126,8 @@
   }
   .modal-head {
     padding: 20px 24px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--surface);
   }
   .modal-head h3 { font-size: 15px; font-weight: 600; }
   .modal-body { padding: 24px; }
@@ -164,8 +144,6 @@
     padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif;
     color: var(--text-primary); background: var(--surface); outline: none; cursor: pointer;
   }
-
-  /* ── PO Items Table inside modal ── */
   .items-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
   .items-table th { font-size: 11px; color: var(--text-muted); padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
   .items-table td { padding: 6px 4px; vertical-align: middle; }
@@ -173,26 +151,16 @@
   .btn-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px; padding: 0 4px; }
   .add-row-btn { background: none; border: 1px dashed var(--border); width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-top: 8px; transition: all 0.15s; }
   .add-row-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
-
-  /* ── Toast ── */
   .toast {
     position: fixed; bottom: 24px; right: 24px; background: var(--sidebar-bg); color: #fff;
     padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 999;
     transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* ── Notification bell ── */
   .notif-dot { width: 7px; height: 7px; background: #ef4444; border-radius: 50%; margin-left: -6px; margin-top: -10px; }
-
-  /* ── Empty state ── */
   .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 13px; }
-
-  /* ── Page sections ── */
   .page-section { display: none; }
   .page-section.active { display: block; }
-
-  /* ── AI Description ── */
   .ai-btn {
     background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none;
     padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;
@@ -207,7 +175,6 @@
 </head>
 <body>
 
-<!-- ══ SIDEBAR ══ -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="brand">PO Manager</div>
@@ -234,10 +201,7 @@
   </div>
 </aside>
 
-<!-- ══ MAIN ══ -->
 <div class="main">
-
-  <!-- Topbar -->
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Dashboard</span>
     <div class="topbar-right">
@@ -260,8 +224,6 @@
   </div>
 
   <div class="content">
-
-    <!-- ══ DASHBOARD PAGE ══ -->
     <div class="page-section active" id="page-dashboard">
       <div class="stat-grid">
         <div class="stat-card blue">
@@ -304,7 +266,6 @@
       </div>
     </div>
 
-    <!-- ══ ORDERS PAGE ══ -->
     <div class="page-section" id="page-orders">
       <div class="table-card">
         <div class="table-header">
@@ -325,7 +286,6 @@
       </div>
     </div>
 
-    <!-- ══ VENDORS PAGE ══ -->
     <div class="page-section" id="page-vendors">
       <div class="table-card">
         <div class="table-header">
@@ -341,7 +301,6 @@
       </div>
     </div>
 
-    <!-- ══ PRODUCTS PAGE ══ -->
     <div class="page-section" id="page-products">
       <div class="table-card">
         <div class="table-header">
@@ -356,11 +315,9 @@
         </table>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ══ CREATE PO MODAL ══ -->
 <div class="modal-overlay" id="po-modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -378,7 +335,6 @@
           <select class="form-select" id="po-vendor"></select>
         </div>
       </div>
-
       <div style="margin-top:20px">
         <label class="form-label">Order Items</label>
         <table class="items-table">
@@ -387,7 +343,6 @@
         </table>
         <button class="add-row-btn" onclick="addItemRow()">+ Add Product Row</button>
       </div>
-
       <div style="margin-top:16px;background:#f8fafc;border-radius:8px;padding:14px">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px">
           <span>Subtotal</span><span id="subtotal-display">$0.00</span>
@@ -407,7 +362,6 @@
   </div>
 </div>
 
-<!-- ══ ADD VENDOR MODAL ══ -->
 <div class="modal-overlay" id="vendor-modal">
   <div class="modal-box" style="width:420px">
     <div class="modal-head">
@@ -435,7 +389,6 @@
   </div>
 </div>
 
-<!-- ══ ADD PRODUCT MODAL ══ -->
 <div class="modal-overlay" id="product-modal">
   <div class="modal-box" style="width:480px">
     <div class="modal-head">
@@ -477,10 +430,10 @@
   </div>
 </div>
 
-<!-- ══ TOAST ══ -->
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
 const API = 'http://127.0.0.1:5000/api';
 let allProducts = [];
@@ -506,7 +459,6 @@ function formatMoney(usdAmount) {
   return symbol + converted;
 }
 
-// ── Page Navigation ──
 function showPage(name) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -518,25 +470,21 @@ function showPage(name) {
     name === 'dashboard' ? 'Dashboard' :
     name === 'orders'    ? 'Purchase Orders' :
     name === 'vendors'   ? 'Vendors' : 'Products';
-
   if (name === 'dashboard' || name === 'orders') loadOrders();
   if (name === 'vendors')  loadVendors();
   if (name === 'products') loadProducts();
 }
 
-// ── Toast ──
 function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), duration);
 }
 
-// ── Badge helper ──
 function badge(status) {
   return `<span class="badge-status ${status.toLowerCase()}">${status}</span>`;
 }
 
-// ── Load Orders ──
 async function loadOrders() {
   try {
     const [ordersRes, vendorsRes] = await Promise.all([
@@ -546,8 +494,6 @@ async function loadOrders() {
     const vendors = await vendorsRes.json();
     const vMap = {};
     vendors.forEach(v => vMap[v.id] = v.name);
-
-    // Stats
     const total    = orders.length;
     const approved = orders.filter(o => o.status === 'Approved').length;
     const pending  = orders.filter(o => o.status === 'Pending').length;
@@ -556,7 +502,6 @@ async function loadOrders() {
     document.getElementById('stat-approved').textContent = approved;
     document.getElementById('stat-pending').textContent  = pending;
     document.getElementById('stat-value').textContent    = formatMoney(value);
-
     const rows = orders.map(o => `
       <tr>
         <td><span class="ref-code">${o.reference_no}</span></td>
@@ -572,7 +517,6 @@ async function loadOrders() {
           </select>
         </td>
       </tr>`).join('');
-
     const emptyRow = '<tr><td colspan="7" class="empty-state">No orders yet. Create one!</td></tr>';
     document.getElementById('dashboard-orders-body').innerHTML = rows || emptyRow;
     document.getElementById('orders-body').innerHTML = rows || emptyRow;
@@ -581,7 +525,6 @@ async function loadOrders() {
   }
 }
 
-// ── Update Status ──
 async function updateStatus(id, status) {
   try {
     await fetch(`${API}/orders/${id}/status`, {
@@ -594,7 +537,6 @@ async function updateStatus(id, status) {
   } catch(e) { showToast('Failed to update status'); }
 }
 
-// ── Load Vendors ──
 async function loadVendors() {
   try {
     const res = await fetch(API + '/vendors');
@@ -611,7 +553,6 @@ async function loadVendors() {
   } catch(e) { showToast('Failed to load vendors'); }
 }
 
-// ── Load Products ──
 async function loadProducts() {
   try {
     const res = await fetch(API + '/products');
@@ -621,7 +562,7 @@ async function loadProducts() {
         <td><strong>${p.name}</strong></td>
         <td><span class="ref-code">${p.sku}</span></td>
         <td><span class="badge-status draft">${p.category || 'General'}</span></td>
-        <td><strong>$${parseFloat(p.unit_price).toFixed(2)}</strong></td>
+        <td><strong>${formatMoney(p.unit_price)}</strong></td>
         <td>${p.stock_level}</td>
         <td><button class="btn-icon" onclick="deleteProduct(${p.id})">🗑</button></td>
       </tr>`).join('');
@@ -629,19 +570,18 @@ async function loadProducts() {
   } catch(e) { showToast('Failed to load products'); }
 }
 
-// ── Delete helpers ──
 async function deleteVendor(id) {
   if (!confirm('Delete this vendor?')) return;
   await fetch(`${API}/vendors/${id}`, {method:'DELETE'});
   showToast('Vendor deleted'); loadVendors();
 }
+
 async function deleteProduct(id) {
   if (!confirm('Delete this product?')) return;
   await fetch(`${API}/products/${id}`, {method:'DELETE'});
   showToast('Product deleted'); loadProducts();
 }
 
-// ── Modals ──
 function openCreateModal() {
   fetch(API + '/vendors').then(r => r.json()).then(vendors => {
     allVendors = vendors;
@@ -659,7 +599,6 @@ function openVendorModal()  { document.getElementById('vendor-modal').classList.
 function openProductModal() { document.getElementById('product-modal').classList.add('open'); }
 function closeModal(id)     { document.getElementById(id).classList.remove('open'); }
 
-// ── PO Item Rows ──
 function addItemRow() {
   const options = allProducts.map(p => `<option value="${p.id}" data-price="${p.unit_price}">${p.name}</option>`).join('');
   const row = document.createElement('tr');
@@ -670,7 +609,6 @@ function addItemRow() {
     <td><span class="item-sub" style="font-size:12px;font-weight:500;padding:0 8px">$0.00</span></td>
     <td><button class="btn-remove" onclick="this.closest('tr').remove();recalcTotal()">✕</button></td>`;
   document.getElementById('items-body').appendChild(row);
-  // fill price for first product
   const sel = row.querySelector('.item-product');
   fillPrice(sel);
 }
@@ -699,23 +637,19 @@ function recalcTotal() {
   document.getElementById('total-display').textContent    = formatMoney(total);
 }
 
-// ── Submit PO ──
 async function submitPO() {
   const ref      = document.getElementById('po-ref').value.trim();
   const vendorId = parseInt(document.getElementById('po-vendor').value);
   const items    = [];
-
   document.querySelectorAll('#items-body tr').forEach(row => {
     const productId = parseInt(row.querySelector('.item-product')?.value);
     const qty       = parseInt(row.querySelector('.item-qty')?.value);
     const price     = parseFloat(row.querySelector('.item-price')?.value);
     if (productId && qty && price) items.push({product_id: productId, quantity: qty, unit_price: price});
   });
-
   if (!ref || !vendorId || items.length === 0) {
     showToast('Please fill all fields and add at least one item'); return;
   }
-
   try {
     const res = await fetch(API + '/orders', {
       method: 'POST',
@@ -733,7 +667,6 @@ async function submitPO() {
   } catch(e) { showToast('Failed to connect to API'); }
 }
 
-// ── Submit Vendor ──
 async function submitVendor() {
   const name    = document.getElementById('v-name').value.trim();
   const contact = document.getElementById('v-contact').value.trim();
@@ -748,13 +681,12 @@ async function submitVendor() {
   } catch(e) { showToast('Failed to add vendor'); }
 }
 
-// ── Submit Product ──
 async function submitProduct() {
-  const name       = document.getElementById('p-name').value.trim();
-  const sku        = document.getElementById('p-sku').value.trim();
-  const unit_price = parseFloat(document.getElementById('p-price').value);
-  const stock_level= parseInt(document.getElementById('p-stock').value);
-  const category   = document.getElementById('p-category').value.trim();
+  const name        = document.getElementById('p-name').value.trim();
+  const sku         = document.getElementById('p-sku').value.trim();
+  const unit_price  = parseFloat(document.getElementById('p-price').value);
+  const stock_level = parseInt(document.getElementById('p-stock').value);
+  const category    = document.getElementById('p-category').value.trim();
   if (!name || !sku || !unit_price) { showToast('Please fill required fields'); return; }
   try {
     await fetch(API + '/products', {
@@ -765,7 +697,6 @@ async function submitProduct() {
   } catch(e) { showToast('Failed to add product'); }
 }
 
-// ── AI Description (calls backend) ──
 async function getAIDescription() {
   const name     = document.getElementById('p-name').value.trim();
   const category = document.getElementById('p-category').value.trim();
@@ -781,19 +712,33 @@ async function getAIDescription() {
     const data = await res.json();
     box.textContent = data.description || 'No description generated.';
   } catch(e) {
-    box.textContent = 'AI service unavailable. We will set this up in a later step!';
+    box.textContent = 'AI service unavailable.';
   }
 }
 
-// ── Logout ──
 function logout() {
-  if (confirm('Log out?')) showToast('Logged out (Auth coming in next step!)');
+  if (confirm('Log out?')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'login.html';
+  }
 }
 
-// ── Init ──
-document.getElementById('user-name').textContent = 'Admin User';
-document.getElementById('user-initials').textContent = 'AU';
+const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+const name = savedUser.username || 'Admin User';
+document.getElementById('user-name').textContent = name;
+document.getElementById('user-initials').textContent = name.slice(0,2).toUpperCase();
 loadOrders();
+
+const socket = io('http://localhost:4000');
+socket.on('po_status_changed', (data) => {
+  showToast(`🔔 ${data.reference_no} → ${data.status} (${data.vendor})`);
+  const dot = document.getElementById('notif-dot');
+  dot.style.background = '#ef4444';
+  dot.style.transform  = 'scale(1.4)';
+  setTimeout(() => { dot.style.transform = 'scale(1)'; }, 300);
+  loadOrders();
+});
 </script>
 </body>
 </html>
