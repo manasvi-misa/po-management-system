@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PO Manager — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0b1120;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .container {
+    display: flex;
+    width: 860px;
+    max-width: 95vw;
+    min-height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .left {
+    flex: 1;
+    background: #111827;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 0.5px solid rgba(255,255,255,0.07);
+  }
+  .brand { color: #fff; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .brand-sub { color: #6ee7b7; font-size: 12px; font-family: 'DM Mono', monospace; margin-bottom: 40px; }
+  .feature { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+  .feature-dot { width: 8px; height: 8px; border-radius: 50%; background: #6ee7b7; margin-top: 6px; flex-shrink: 0; }
+  .feature-text { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.6; }
+  .feature-text strong { color: #fff; display: block; font-size: 13px; margin-bottom: 2px; }
+  .right {
+    width: 380px;
+    background: #ffffff;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tab-row { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; }
+  .tab {
+    flex: 1; text-align: center; padding: 10px;
+    font-size: 13px; font-weight: 500; color: #94a3b8;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.15s;
+  }
+  .tab.active { color: #0b1120; border-bottom-color: #0b1120; }
+  .form-section { display: none; }
+  .form-section.active { display: block; }
+  h2 { font-size: 20px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 24px; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 11px; font-weight: 500; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
+  .form-input {
+    width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: #0f172a; outline: none; transition: border 0.15s;
+  }
+  .form-input:focus { border-color: #0b1120; }
+  .btn-login {
+    width: 100%; background: #0b1120; color: #fff; border: none;
+    padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s; margin-top: 4px;
+  }
+  .btn-login:hover { opacity: 0.85; }
+  .error-box {
+    background: #fee2e2; color: #991b1b; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; margin-bottom: 16px; display: none;
+  }
+  .success-box {
+    background: #d1fae5; color: #065f46; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; margin-bottom: 16px; display: none;
+  }
+  .divider { text-align: center; font-size: 11px; color: #cbd5e1; margin: 16px 0; }
+  .oauth-btn {
+    width: 100%; background: #fff; color: #0f172a;
+    border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 10px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .oauth-btn:hover { background: #f8fafc; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Left panel -->
+  <div class="left">
+    <div class="brand">PO Manager</div>
+    <div class="brand-sub">ERP System v1.0</div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      <div class="feature-text">
+        <strong>Purchase Order Management</strong>
+        Create and track POs with automatic 5% tax calculation
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      <div class="feature-text">
+        <strong>Real-time Notifications</strong>
+        Instant status updates via WebSocket
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      <div class="feature-text">
+        <strong>AI-Powered Descriptions</strong>
+        Auto-generate product descriptions with Gemini
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-dot"></div>
+      <div class="feature-text">
+        <strong>Secure JWT Authentication</strong>
+        Industry-standard token-based auth
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="right">
+    <div class="tab-row">
+      <div class="tab active" onclick="switchTab('login')">Sign In</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="form-section active" id="form-login">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to your account to continue</p>
+      <div class="error-box" id="login-error"></div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="login-username" placeholder="Enter your username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="Enter your password"/>
+      </div>
+      <button class="btn-login" onclick="doLogin()">Sign In</button>
+      <div class="divider">or continue with</div>
+      <button class="oauth-btn" onclick="showOAuthMsg()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="form-section" id="form-register">
+      <h2>Create account</h2>
+      <p class="subtitle">Register to access the PO system</p>
+      <div class="error-box"   id="register-error"></div>
+      <div class="success-box" id="register-success"></div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="reg-username" placeholder="Choose a username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="reg-email" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="reg-password" type="password" placeholder="Choose a password"/>
+      </div>
+      <button class="btn-login" onclick="doRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('form-' + tab).classList.add('active');
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+async function doLogin() {
+  hideError('login-error');
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username || !password) { showError('login-error', 'Please fill all fields'); return; }
+  try {
+    const res  = await fetch(API + '/auth/login', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user',  JSON.stringify(data.user));
+      window.location.href = 'index.html';
+    } else {
+      showError('login-error', data.error || 'Login failed');
+    }
+  } catch(e) { showError('login-error', 'Cannot connect to server. Is Flask running?'); }
+}
+
+async function doRegister() {
+  hideError('register-error');
+  const username = document.getElementById('reg-username').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!username || !email || !password) { showError('register-error', 'Please fill all fields'); return; }
+  try {
+    const res  = await fetch(API + '/auth/register', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user',  JSON.stringify(data.user));
+      window.location.href = 'index.html';
+    } else {
+      showError('register-error', data.error || 'Registration failed');
+    }
+  } catch(e) { showError('register-error', 'Cannot connect to server'); }
+}
+
+function showOAuthMsg() {
+  showError('login-error', 'Google OAuth requires cloud deployment. Use username/password for now.');
+}
+
+// Press Enter to login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const active = document.querySelector('.form-section.active').id;
+    if (active === 'form-login') doLogin();
+    else doRegister();
+  }
+});
+</script>
+</body>
+</html>

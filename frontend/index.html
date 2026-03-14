@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PO Manager — ERP System</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --sidebar-bg: #0b1120;
+    --sidebar-width: 220px;
+    --accent: #6ee7b7;
+    --accent-dark: #059669;
+    --surface: #ffffff;
+    --page-bg: #f4f6fa;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --badge-approved-bg: #d1fae5; --badge-approved-text: #065f46;
+    --badge-pending-bg: #fef3c7; --badge-pending-text: #92400e;
+    --badge-draft-bg: #f1f5f9;   --badge-draft-text: #475569;
+    --badge-rejected-bg: #fee2e2;--badge-rejected-text: #991b1b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--page-bg); color: var(--text-primary); display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-width); background: var(--sidebar-bg);
+    display: flex; flex-direction: column; padding: 0;
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px; border-bottom: 0.5px solid rgba(255,255,255,0.07);
+  }
+  .sidebar-logo .brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+  .sidebar-logo .sub { color: var(--accent); font-size: 11px; font-weight: 400; margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-link {
+    color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 400;
+    padding: 9px 12px; border-radius: 8px; cursor: pointer;
+    display: flex; align-items: center; gap: 10px; transition: all 0.15s; text-decoration: none;
+  }
+  .nav-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+  .nav-link.active { color: #fff; background: rgba(110,231,183,0.12); }
+  .nav-link.active .nav-icon { color: var(--accent); }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+  .sidebar-footer { padding: 16px 10px; border-top: 0.5px solid rgba(255,255,255,0.07); }
+
+  /* ── Main ── */
+  .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .user-pill {
+    display: flex; align-items: center; gap: 8px; background: var(--page-bg);
+    border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px 4px 4px;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .user-avatar {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--sidebar-bg);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); font-size: 11px; font-weight: 600;
+  }
+  .content { padding: 28px; flex: 1; }
+
+  /* ── Stat Cards ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat-card.blue::before  { background: #3b82f6; }
+  .stat-card.green::before { background: #10b981; }
+  .stat-card.amber::before { background: #f59e0b; }
+  .stat-card.purple::before{ background: #8b5cf6; }
+  .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .stat-value { font-size: 26px; font-weight: 600; color: var(--text-primary); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ── Table Card ── */
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-header {
+    padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-header h2 { font-size: 14px; font-weight: 600; }
+  .table-header .actions { display: flex; gap: 8px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #f8fafc; font-size: 11px; font-weight: 500; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 10px 20px; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  .ref-code { font-family: 'DM Mono', monospace; font-size: 12px; color: #3b82f6; }
+
+  /* ── Badges ── */
+  .badge-status {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 500;
+  }
+  .badge-status.approved  { background: var(--badge-approved-bg);  color: var(--badge-approved-text); }
+  .badge-status.pending   { background: var(--badge-pending-bg);   color: var(--badge-pending-text); }
+  .badge-status.draft     { background: var(--badge-draft-bg);     color: var(--badge-draft-text); }
+  .badge-status.rejected  { background: var(--badge-rejected-bg);  color: var(--badge-rejected-text); }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    background: var(--sidebar-bg); color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-outline {
+    background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+    padding: 7px 14px; border-radius: 8px; font-size: 12px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .btn-outline:hover { border-color: #94a3b8; color: var(--text-primary); }
+  .btn-icon {
+    background: transparent; border: 1px solid var(--border); padding: 6px 10px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .btn-icon:hover { background: var(--page-bg); color: var(--text-primary); }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 200; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border-radius: 14px; width: 680px; max-width: 95vw;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .modal-head {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface);
+  }
+  .modal-head h3 { font-size: 15px; font-weight: 600; }
+  .modal-body { padding: 24px; }
+  .modal-foot { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
+  .form-control {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary); background: var(--surface); outline: none; transition: border 0.15s;
+  }
+  .form-control:focus { border-color: #3b82f6; }
+  .form-select {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary); background: var(--surface); outline: none; cursor: pointer;
+  }
+
+  /* ── PO Items Table inside modal ── */
+  .items-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .items-table th { font-size: 11px; color: var(--text-muted); padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  .items-table td { padding: 6px 4px; vertical-align: middle; }
+  .items-table input, .items-table select { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 12px; font-family: 'DM Sans', sans-serif; width: 100%; }
+  .btn-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px; padding: 0 4px; }
+  .add-row-btn { background: none; border: 1px dashed var(--border); width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-top: 8px; transition: all 0.15s; }
+  .add-row-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; background: var(--sidebar-bg); color: #fff;
+    padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 999;
+    transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── Notification bell ── */
+  .notif-dot { width: 7px; height: 7px; background: #ef4444; border-radius: 50%; margin-left: -6px; margin-top: -10px; }
+
+  /* ── Empty state ── */
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 13px; }
+
+  /* ── Page sections ── */
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  /* ── AI Description ── */
+  .ai-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; margin-left: 6px;
+  }
+  .ai-desc-box {
+    background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; color: #3730a3; margin-top: 6px; display: none;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">PO Manager</div>
+    <div class="sub">ERP System v1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-link active" onclick="showPage('dashboard')">
+      <span class="nav-icon">▦</span> Dashboard
+    </div>
+    <div class="nav-link" onclick="showPage('orders')">
+      <span class="nav-icon">📋</span> Purchase Orders
+    </div>
+    <div class="nav-link" onclick="showPage('vendors')">
+      <span class="nav-icon">🏢</span> Vendors
+    </div>
+    <div class="nav-link" onclick="showPage('products')">
+      <span class="nav-icon">📦</span> Products
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="nav-link" onclick="logout()" style="color:rgba(255,255,255,0.3)">
+      <span class="nav-icon">↩</span> Logout
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="topbar-right">
+      <select id="currency-select" onchange="setCurrency(this.value)" style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#0f172a;background:#f8fafc;cursor:pointer;outline:none">
+        <option value="USD">🇺🇸 USD — $</option>
+        <option value="INR">🇮🇳 INR — ₹</option>
+        <option value="EUR">🇪🇺 EUR — €</option>
+        <option value="GBP">🇬🇧 GBP — £</option>
+        <option value="AED">🇦🇪 AED — د.إ</option>
+      </select>
+      <div style="position:relative;display:inline-block">
+        <button class="btn-icon" title="Notifications" onclick="showToast('No new notifications')">🔔</button>
+        <div class="notif-dot" id="notif-dot"></div>
+      </div>
+      <div class="user-pill">
+        <div class="user-avatar" id="user-initials">?</div>
+        <span id="user-name">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD PAGE ══ -->
+    <div class="page-section active" id="page-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">all time</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Approved</div>
+          <div class="stat-value" id="stat-approved">—</div>
+          <div class="stat-sub" style="color:#10b981">ready to fulfill</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-sub" style="color:#f59e0b">awaiting review</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Total Value</div>
+          <div class="stat-value" id="stat-value">—</div>
+          <div class="stat-sub">incl. 5% tax</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Recent Purchase Orders</h2>
+          <div class="actions">
+            <button class="btn-primary" onclick="openCreateModal()">+ New PO</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Ref No</th><th>Vendor</th><th>Items</th>
+            <th>Total (incl. tax)</th><th>Status</th><th>Date</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="dashboard-orders-body">
+            <tr><td colspan="7" class="empty-state">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ ORDERS PAGE ══ -->
+    <div class="page-section" id="page-orders">
+      <div class="table-card">
+        <div class="table-header">
+          <h2>All Purchase Orders</h2>
+          <div class="actions">
+            <button class="btn-primary" onclick="openCreateModal()">+ New PO</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Ref No</th><th>Vendor</th><th>Items</th>
+            <th>Total (incl. tax)</th><th>Status</th><th>Date</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="orders-body">
+            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ VENDORS PAGE ══ -->
+    <div class="page-section" id="page-vendors">
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Vendors</h2>
+          <button class="btn-primary" onclick="openVendorModal()">+ Add Vendor</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Contact</th><th>Rating</th><th>Added</th><th>Actions</th></tr></thead>
+          <tbody id="vendors-body">
+            <tr><td colspan="5" class="empty-state">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ PRODUCTS PAGE ══ -->
+    <div class="page-section" id="page-products">
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Products</h2>
+          <button class="btn-primary" onclick="openProductModal()">+ Add Product</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>SKU</th><th>Category</th><th>Unit Price</th><th>Stock</th><th>Actions</th></tr></thead>
+          <tbody id="products-body">
+            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ CREATE PO MODAL ══ -->
+<div class="modal-overlay" id="po-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Create New Purchase Order</h3>
+      <button class="btn-icon" onclick="closeModal('po-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-6">
+          <label class="form-label">Reference No</label>
+          <input class="form-control" id="po-ref" placeholder="e.g. PO-2024-006"/>
+        </div>
+        <div class="col-6">
+          <label class="form-label">Vendor</label>
+          <select class="form-select" id="po-vendor"></select>
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <label class="form-label">Order Items</label>
+        <table class="items-table">
+          <thead><tr><th>Product</th><th style="width:80px">Qty</th><th style="width:100px">Unit Price</th><th style="width:90px">Subtotal</th><th style="width:30px"></th></tr></thead>
+          <tbody id="items-body"></tbody>
+        </table>
+        <button class="add-row-btn" onclick="addItemRow()">+ Add Product Row</button>
+      </div>
+
+      <div style="margin-top:16px;background:#f8fafc;border-radius:8px;padding:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px">
+          <span>Subtotal</span><span id="subtotal-display">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px">
+          <span>Tax (5%)</span><span id="tax-display">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+          <span>Total</span><span id="total-display" style="color:#10b981">$0.00</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal('po-modal')">Cancel</button>
+      <button class="btn-primary" onclick="submitPO()">Create Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD VENDOR MODAL ══ -->
+<div class="modal-overlay" id="vendor-modal">
+  <div class="modal-box" style="width:420px">
+    <div class="modal-head">
+      <h3>Add Vendor</h3>
+      <button class="btn-icon" onclick="closeModal('vendor-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-3">
+        <label class="form-label">Vendor Name</label>
+        <input class="form-control" id="v-name" placeholder="Company name"/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contact Email</label>
+        <input class="form-control" id="v-contact" placeholder="contact@company.com"/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Rating (0–5)</label>
+        <input class="form-control" id="v-rating" type="number" min="0" max="5" step="0.1" placeholder="4.5"/>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal('vendor-modal')">Cancel</button>
+      <button class="btn-primary" onclick="submitVendor()">Add Vendor</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD PRODUCT MODAL ══ -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal-box" style="width:480px">
+    <div class="modal-head">
+      <h3>Add Product</h3>
+      <button class="btn-icon" onclick="closeModal('product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-8">
+          <label class="form-label">Product Name</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input class="form-control" id="p-name" placeholder="e.g. Wireless Keyboard"/>
+            <button class="ai-btn" onclick="getAIDescription()">✦ AI</button>
+          </div>
+          <div class="ai-desc-box" id="ai-desc-box"></div>
+        </div>
+        <div class="col-4">
+          <label class="form-label">Category</label>
+          <input class="form-control" id="p-category" placeholder="Electronics"/>
+        </div>
+        <div class="col-4">
+          <label class="form-label">SKU</label>
+          <input class="form-control" id="p-sku" placeholder="SKU-006"/>
+        </div>
+        <div class="col-4">
+          <label class="form-label">Unit Price ($)</label>
+          <input class="form-control" id="p-price" type="number" placeholder="29.99"/>
+        </div>
+        <div class="col-4">
+          <label class="form-label">Stock Level</label>
+          <input class="form-control" id="p-stock" type="number" placeholder="100"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal('product-modal')">Cancel</button>
+      <button class="btn-primary" onclick="submitProduct()">Add Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const API = 'http://127.0.0.1:5000/api';
+let allProducts = [];
+let allVendors  = [];
+
+const CURRENCIES = {
+  USD: { symbol: '$',    rate: 1 },
+  INR: { symbol: '₹',   rate: 83.5 },
+  EUR: { symbol: '€',   rate: 0.92 },
+  GBP: { symbol: '£',   rate: 0.79 },
+  AED: { symbol: 'د.إ', rate: 3.67 }
+};
+let currentCurrency = 'USD';
+
+function setCurrency(code) {
+  currentCurrency = code;
+  loadOrders();
+}
+
+function formatMoney(usdAmount) {
+  const { symbol, rate } = CURRENCIES[currentCurrency];
+  const converted = (parseFloat(usdAmount) * rate).toFixed(2);
+  return symbol + converted;
+}
+
+// ── Page Navigation ──
+function showPage(name) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + name + "'")) l.classList.add('active');
+  });
+  document.getElementById('topbar-title').textContent =
+    name === 'dashboard' ? 'Dashboard' :
+    name === 'orders'    ? 'Purchase Orders' :
+    name === 'vendors'   ? 'Vendors' : 'Products';
+
+  if (name === 'dashboard' || name === 'orders') loadOrders();
+  if (name === 'vendors')  loadVendors();
+  if (name === 'products') loadProducts();
+}
+
+// ── Toast ──
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── Badge helper ──
+function badge(status) {
+  return `<span class="badge-status ${status.toLowerCase()}">${status}</span>`;
+}
+
+// ── Load Orders ──
+async function loadOrders() {
+  try {
+    const [ordersRes, vendorsRes] = await Promise.all([
+      fetch(API + '/orders'), fetch(API + '/vendors')
+    ]);
+    const orders  = await ordersRes.json();
+    const vendors = await vendorsRes.json();
+    const vMap = {};
+    vendors.forEach(v => vMap[v.id] = v.name);
+
+    // Stats
+    const total    = orders.length;
+    const approved = orders.filter(o => o.status === 'Approved').length;
+    const pending  = orders.filter(o => o.status === 'Pending').length;
+    const value    = orders.reduce((s, o) => s + o.total_amount, 0);
+    document.getElementById('stat-total').textContent    = total;
+    document.getElementById('stat-approved').textContent = approved;
+    document.getElementById('stat-pending').textContent  = pending;
+    document.getElementById('stat-value').textContent    = formatMoney(value);
+
+    const rows = orders.map(o => `
+      <tr>
+        <td><span class="ref-code">${o.reference_no}</span></td>
+        <td>${vMap[o.vendor_id] || 'Unknown'}</td>
+        <td>${o.items ? o.items.length : '—'}</td>
+        <td><strong>${formatMoney(o.total_amount)}</strong></td>
+        <td>${badge(o.status)}</td>
+        <td style="color:var(--text-muted);font-size:12px">${o.created_at.split(' ')[0]}</td>
+        <td>
+          <select onchange="updateStatus(${o.id}, this.value)" style="border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:11px;cursor:pointer">
+            ${['Draft','Pending','Approved','Rejected'].map(s =>
+              `<option ${s===o.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </td>
+      </tr>`).join('');
+
+    const emptyRow = '<tr><td colspan="7" class="empty-state">No orders yet. Create one!</td></tr>';
+    document.getElementById('dashboard-orders-body').innerHTML = rows || emptyRow;
+    document.getElementById('orders-body').innerHTML = rows || emptyRow;
+  } catch(e) {
+    showToast('Could not connect to API. Is Flask running?');
+  }
+}
+
+// ── Update Status ──
+async function updateStatus(id, status) {
+  try {
+    await fetch(`${API}/orders/${id}/status`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({status})
+    });
+    showToast('Status updated to ' + status);
+    loadOrders();
+  } catch(e) { showToast('Failed to update status'); }
+}
+
+// ── Load Vendors ──
+async function loadVendors() {
+  try {
+    const res = await fetch(API + '/vendors');
+    allVendors = await res.json();
+    const rows = allVendors.map(v => `
+      <tr>
+        <td><strong>${v.name}</strong></td>
+        <td style="color:var(--text-muted)">${v.contact}</td>
+        <td>${'★'.repeat(Math.round(v.rating))} <span style="font-size:11px;color:var(--text-muted)">${v.rating}</span></td>
+        <td style="font-size:12px;color:var(--text-muted)">${v.created_at.split(' ')[0]}</td>
+        <td><button class="btn-icon" onclick="deleteVendor(${v.id})">🗑</button></td>
+      </tr>`).join('');
+    document.getElementById('vendors-body').innerHTML = rows || '<tr><td colspan="5" class="empty-state">No vendors yet.</td></tr>';
+  } catch(e) { showToast('Failed to load vendors'); }
+}
+
+// ── Load Products ──
+async function loadProducts() {
+  try {
+    const res = await fetch(API + '/products');
+    allProducts = await res.json();
+    const rows = allProducts.map(p => `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td><span class="ref-code">${p.sku}</span></td>
+        <td><span class="badge-status draft">${p.category || 'General'}</span></td>
+        <td><strong>$${parseFloat(p.unit_price).toFixed(2)}</strong></td>
+        <td>${p.stock_level}</td>
+        <td><button class="btn-icon" onclick="deleteProduct(${p.id})">🗑</button></td>
+      </tr>`).join('');
+    document.getElementById('products-body').innerHTML = rows || '<tr><td colspan="6" class="empty-state">No products yet.</td></tr>';
+  } catch(e) { showToast('Failed to load products'); }
+}
+
+// ── Delete helpers ──
+async function deleteVendor(id) {
+  if (!confirm('Delete this vendor?')) return;
+  await fetch(`${API}/vendors/${id}`, {method:'DELETE'});
+  showToast('Vendor deleted'); loadVendors();
+}
+async function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  await fetch(`${API}/products/${id}`, {method:'DELETE'});
+  showToast('Product deleted'); loadProducts();
+}
+
+// ── Modals ──
+function openCreateModal() {
+  fetch(API + '/vendors').then(r => r.json()).then(vendors => {
+    allVendors = vendors;
+    const sel = document.getElementById('po-vendor');
+    sel.innerHTML = vendors.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+  });
+  fetch(API + '/products').then(r => r.json()).then(p => { allProducts = p; });
+  document.getElementById('items-body').innerHTML = '';
+  document.getElementById('po-ref').value = 'PO-' + Date.now().toString().slice(-6);
+  addItemRow();
+  recalcTotal();
+  document.getElementById('po-modal').classList.add('open');
+}
+function openVendorModal()  { document.getElementById('vendor-modal').classList.add('open'); }
+function openProductModal() { document.getElementById('product-modal').classList.add('open'); }
+function closeModal(id)     { document.getElementById(id).classList.remove('open'); }
+
+// ── PO Item Rows ──
+function addItemRow() {
+  const options = allProducts.map(p => `<option value="${p.id}" data-price="${p.unit_price}">${p.name}</option>`).join('');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><select class="item-product" onchange="fillPrice(this)">${options}</select></td>
+    <td><input type="number" class="item-qty" value="1" min="1" oninput="recalcTotal()"/></td>
+    <td><input type="number" class="item-price" step="0.01" oninput="recalcTotal()"/></td>
+    <td><span class="item-sub" style="font-size:12px;font-weight:500;padding:0 8px">$0.00</span></td>
+    <td><button class="btn-remove" onclick="this.closest('tr').remove();recalcTotal()">✕</button></td>`;
+  document.getElementById('items-body').appendChild(row);
+  // fill price for first product
+  const sel = row.querySelector('.item-product');
+  fillPrice(sel);
+}
+
+function fillPrice(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  const price = opt.dataset.price || 0;
+  sel.closest('tr').querySelector('.item-price').value = parseFloat(price).toFixed(2);
+  recalcTotal();
+}
+
+function recalcTotal() {
+  let subtotal = 0;
+  document.querySelectorAll('#items-body tr').forEach(row => {
+    const qty   = parseFloat(row.querySelector('.item-qty')?.value  || 0);
+    const price = parseFloat(row.querySelector('.item-price')?.value || 0);
+    const sub   = qty * price;
+    const subEl = row.querySelector('.item-sub');
+    if (subEl) subEl.textContent = formatMoney(sub);
+    subtotal += sub;
+  });
+  const tax   = subtotal * 0.05;
+  const total = subtotal + tax;
+  document.getElementById('subtotal-display').textContent = formatMoney(subtotal);
+  document.getElementById('tax-display').textContent      = formatMoney(tax);
+  document.getElementById('total-display').textContent    = formatMoney(total);
+}
+
+// ── Submit PO ──
+async function submitPO() {
+  const ref      = document.getElementById('po-ref').value.trim();
+  const vendorId = parseInt(document.getElementById('po-vendor').value);
+  const items    = [];
+
+  document.querySelectorAll('#items-body tr').forEach(row => {
+    const productId = parseInt(row.querySelector('.item-product')?.value);
+    const qty       = parseInt(row.querySelector('.item-qty')?.value);
+    const price     = parseFloat(row.querySelector('.item-price')?.value);
+    if (productId && qty && price) items.push({product_id: productId, quantity: qty, unit_price: price});
+  });
+
+  if (!ref || !vendorId || items.length === 0) {
+    showToast('Please fill all fields and add at least one item'); return;
+  }
+
+  try {
+    const res = await fetch(API + '/orders', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({reference_no: ref, vendor_id: vendorId, items})
+    });
+    if (res.ok) {
+      showToast('Purchase Order created successfully!');
+      closeModal('po-modal');
+      loadOrders();
+    } else {
+      const err = await res.json();
+      showToast('Error: ' + (err.error || 'Unknown error'));
+    }
+  } catch(e) { showToast('Failed to connect to API'); }
+}
+
+// ── Submit Vendor ──
+async function submitVendor() {
+  const name    = document.getElementById('v-name').value.trim();
+  const contact = document.getElementById('v-contact').value.trim();
+  const rating  = parseFloat(document.getElementById('v-rating').value);
+  if (!name || !contact) { showToast('Please fill all fields'); return; }
+  try {
+    await fetch(API + '/vendors', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, contact, rating})
+    });
+    showToast('Vendor added!'); closeModal('vendor-modal'); loadVendors();
+  } catch(e) { showToast('Failed to add vendor'); }
+}
+
+// ── Submit Product ──
+async function submitProduct() {
+  const name       = document.getElementById('p-name').value.trim();
+  const sku        = document.getElementById('p-sku').value.trim();
+  const unit_price = parseFloat(document.getElementById('p-price').value);
+  const stock_level= parseInt(document.getElementById('p-stock').value);
+  const category   = document.getElementById('p-category').value.trim();
+  if (!name || !sku || !unit_price) { showToast('Please fill required fields'); return; }
+  try {
+    await fetch(API + '/products', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, sku, unit_price, stock_level, category})
+    });
+    showToast('Product added!'); closeModal('product-modal'); loadProducts();
+  } catch(e) { showToast('Failed to add product'); }
+}
+
+// ── AI Description (calls backend) ──
+async function getAIDescription() {
+  const name     = document.getElementById('p-name').value.trim();
+  const category = document.getElementById('p-category').value.trim();
+  if (!name) { showToast('Enter a product name first'); return; }
+  const box = document.getElementById('ai-desc-box');
+  box.style.display = 'block';
+  box.textContent = '✦ Generating description...';
+  try {
+    const res = await fetch(API + '/ai/description', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, category})
+    });
+    const data = await res.json();
+    box.textContent = data.description || 'No description generated.';
+  } catch(e) {
+    box.textContent = 'AI service unavailable. We will set this up in a later step!';
+  }
+}
+
+// ── Logout ──
+function logout() {
+  if (confirm('Log out?')) showToast('Logged out (Auth coming in next step!)');
+}
+
+// ── Init ──
+document.getElementById('user-name').textContent = 'Admin User';
+document.getElementById('user-initials').textContent = 'AU';
+loadOrders();
+</script>
+</body>
+</html>
